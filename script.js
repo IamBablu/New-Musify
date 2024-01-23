@@ -18,23 +18,25 @@ let alboms = [];
 // Gatting all songs from songs folder in an array
 async function gateSongs(folder) {
   let a = await fetch(`https://api.github.com/repos/IamBablu/New-Musify/contents${folder}`);
-  let response = await a.text();
+  let response = await a.json();
   // console.log(response);
   let div = document.createElement("div");
   div.innerHTML = response;
   let as = div.getElementsByTagName("a");
-  // restoring the songs and libraryList
   songs = [];
-  libraryList.innerHTML = "";
-  for (let index = 0; index < as.length; index++) {
-    const element = as[index];
-    // console.log(element);
-    if (element.href.endsWith(".mp3")) {
+  Array.from(response).forEach(e=>{
+    if (e.url.endsWith(".mp3")) {
       // console.log(element.href.replaceAll("%20", " ").split(`${folder}`)[1])
-      songs.push(element.href.replaceAll("%20", " ").split(`${folder}`)[1]);
+      songs.push(e.url.replaceAll("%20", " ").split(`${folder}`)[1]);
     }
-  }
-  // Listing songs in library list
+  })
+  // restoring the songs and libraryList
+  // libraryList.innerHTML = "";
+  // for (let index = 0; index < as.length; index++) {
+  //   const element = as[index];
+  //   // console.log(element);
+  // }
+  // // Listing songs in library list
   songs.forEach((song) => {
     libraryList.innerHTML =
       libraryList.innerHTML +
@@ -90,17 +92,14 @@ function playMusic(track, AudioPlay = true) {
 // getting Banner of each alboms
 async function getBanner(e) {
   let i = await fetch(`https://api.github.com/repos/IamBablu/New-Musify/contents/songs/${e}`);
-  let ir = await i.text();
-  let imgdiv = document.createElement("div");
-  imgdiv.innerHTML = ir;
-  let bannerimg = imgdiv.getElementsByTagName("a");
-  Array.from(bannerimg).forEach((bimg) => {
+  let ir = await i.json();
+  Array.from(ir).forEach((bimg) => {
     if (
-      bimg.href.endsWith(".jpeg") ||
-      bimg.href.endsWith(".jpg") ||
-      bimg.href.endsWith(".png")
+      bimg.url.endsWith(".jpeg") ||
+      bimg.url.endsWith(".jpg") ||
+      bimg.url.endsWith(".png")
     ) {
-      currentBanner = bimg.href.split(":5500")[1];
+      currentBanner = bimg.url.split(":5500")[1];
     }
   });
 }
@@ -112,7 +111,6 @@ async function getTitleDescription(folder) {
   currentTitle = response.title;
   currentDescription = response.description;
 }
-
 // for showing folder in alboms
 async function showFolders() {
   console.log("displaying alboms");
