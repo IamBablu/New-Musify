@@ -17,7 +17,7 @@ let alboms = [];
 
 // Gatting all songs from songs folder in an array
 async function gateSongs(folder) {
-  let a = await fetch(`https://api.github.com/repositories/746588106/contents/${folder}`);
+  let a = await fetch(`https://api.github.com/repositories/746588106/contents${folder}`);
   let response = await a.text();
   // console.log(response);
   let div = document.createElement("div");
@@ -115,7 +115,7 @@ async function getTitleDescription(folder) {
 
 // for showing folder in alboms
 async function showFolders() {
-  console.log("displaying albom");
+  console.log("displaying alboms");
   let f = await fetch('https://api.github.com/repositories/746588106/contents/songs/');
   let response = await f.text();
   let div = document.createElement("div");
