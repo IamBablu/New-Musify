@@ -17,7 +17,8 @@ let alboms = [];
 
 // Gatting all songs from songs folder in an array
 async function gateSongs(folder) {
-  let a = await fetch(`https://api.github.com/repositories/746588106/contents${folder}`);
+  console.log(folder);
+  let a = await fetch(`https://api.github.com/repos/IamBablu/New-Musify/contents${folder}`);
   let response = await a.text();
   // console.log(response);
   let div = document.createElement("div");
@@ -89,7 +90,7 @@ function playMusic(track, AudioPlay = true) {
 
 // getting Banner of each alboms
 async function getBanner(e) {
-  let i = await fetch(`/songs/${e}`);
+  let i = await fetch(`https://api.github.com/repos/IamBablu/New-Musify/contents/songs/${e}`);
   let ir = await i.text();
   let imgdiv = document.createElement("div");
   imgdiv.innerHTML = ir;
@@ -107,7 +108,7 @@ async function getBanner(e) {
 
 // getting current title and description of folder
 async function getTitleDescription(folder) {
-  let t = await fetch(`/songs/${folder}/info.json`);
+  let t = await fetch(`https://api.github.com/repos/IamBablu/New-Musify/contents/songs/${folder}/info.json`);
   let response = await t.json();
   currentTitle = response.title;
   currentDescription = response.description;
@@ -116,36 +117,37 @@ async function getTitleDescription(folder) {
 // for showing folder in alboms
 async function showFolders() {
   console.log("displaying alboms");
-  let f = await fetch('https://api.github.com/repositories/746588106/contents/songs/');
-  let response = await f.text();
-  let div = document.createElement("div");
-  div.innerHTML = response;
-  let as = div.querySelectorAll("a");
-  as.forEach((e) => {
-    if (e.href.includes("/songs/")) {
-      alboms.push(e.href.split("/songs/")[1].replaceAll("%20", " "));
+  let f = await fetch('https://api.github.com/repos/IamBablu/New-Musify/contents/songs/');
+  console.log(f);
+  let response = await f.json();
+  // console.log(response[0])
+  response.forEach(e=>{
+    console.log(e.url)
+    if (!(e.url.split("/songs/")[1].replaceAll("%20", " ").includes(".htaccess"))) {
+      
     }
-  });
+    alboms.push(e.url.split("/songs/")[1].replaceAll("%20", " "));
+    console.log(e.url.split("/songs/")[1].replaceAll("%20", " "))
+  })
   for (let index = 0; index < alboms.length; index++) {
     // console.log(alboms[index].href);
-
+      // console.log(alboms[index])
       await getBanner(alboms[index]);
       // console.log(alboms[index])
       await getTitleDescription(alboms[index]);
       // Listing folder in alboms
       cards.innerHTML += `<div data-folder = "${alboms[index]}" class="card">
       <div class="cardimg">
-        <img src="${currentBanner}" alt="" />
+        <img src="{currentBanner}" alt="" />
         <div class="playbtn">
           <img src="contant/playbtn.svg" alt="" />
-        </div>
-      </div>
-      <div class="Artist">
-        <h3>${currentTitle}</h3>
-        <p>${currentDescription}</p>
-      </div>
-    </div>`;
-    
+          </div>
+          </div>
+          <div class="Artist">
+          <h3>{currentTitle}</h3>
+          <p>{currentDescription}</p>
+          </div>
+          </div>`;
   }
 }
 
