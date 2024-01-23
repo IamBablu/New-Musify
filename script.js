@@ -138,14 +138,14 @@ async function showFolders() {
       // Listing folder in alboms
       cards.innerHTML += `<div data-folder = "${alboms[index]}" class="card">
       <div class="cardimg">
-        <img src="{currentBanner}" alt="" />
+        <img src="${currentBanner}" alt="" />
         <div class="playbtn">
           <img src="contant/playbtn.svg" alt="" />
           </div>
           </div>
           <div class="Artist">
-          <h3>{currentTitle}</h3>
-          <p>{currentDescription}</p>
+          <h3>${currentTitle}</h3>
+          <p>${currentDescription}</p>
           </div>
           </div>`;
   }
