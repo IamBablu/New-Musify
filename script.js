@@ -117,10 +117,10 @@ async function getTitleDescription(folder) {
 async function showFolders() {
   console.log("displaying alboms");
   let f = await fetch('https://api.github.com/repos/IamBablu/New-Musify/contents/songs/');
-  console.log(f);
+  // console.log(f);
   let response = await f.json();
   // console.log(response[0])
-  response.forEach(e=>{
+  Array.from(response).forEach(e=>{
     console.log(e.url)
     alboms.push(e.url.split("/songs/")[1].replaceAll("%20", " "));
     console.log(e.url.split("/songs/")[1].replaceAll("%20", " "))
