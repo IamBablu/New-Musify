@@ -116,7 +116,7 @@ async function getTitleDescription(folder) {
 // for showing folder in alboms
 async function showFolders() {
   console.log("displaying alboms");
-  let f = await fetch(`/songs/`);
+  let f = await fetch('/songs/');
   let response = await f.text();
   let div = document.createElement("div");
   div.innerHTML = response;
