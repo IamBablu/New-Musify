@@ -115,8 +115,8 @@ async function getTitleDescription(folder) {
 
 // for showing folder in alboms
 async function showFolders() {
-  console.log("displaying alboms");
-  let f = await fetch('/contents/songs/');
+  console.log("displaying albom");
+  let f = await fetch('https://api.github.com/repositories/746588106/contents/songs/');
   let response = await f.text();
   let div = document.createElement("div");
   div.innerHTML = response;
