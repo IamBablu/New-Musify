@@ -17,7 +17,6 @@ let alboms = [];
 
 // Gatting all songs from songs folder in an array
 async function gateSongs(folder) {
-  console.log(folder);
   let a = await fetch(`https://api.github.com/repos/IamBablu/New-Musify/contents${folder}`);
   let response = await a.text();
   // console.log(response);
@@ -123,9 +122,6 @@ async function showFolders() {
   // console.log(response[0])
   response.forEach(e=>{
     console.log(e.url)
-    if (!(e.url.split("/songs/")[1].replaceAll("%20", " ").includes(".htaccess"))) {
-      
-    }
     alboms.push(e.url.split("/songs/")[1].replaceAll("%20", " "));
     console.log(e.url.split("/songs/")[1].replaceAll("%20", " "))
   })
