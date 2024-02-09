@@ -9,7 +9,7 @@ const ganaName = document.querySelector(".info").firstElementChild;
 let currentSong = new Audio();
 let currentSongName;
 let currentFolder;
-let currentBanner = "";
+let currentBanner;
 let currentTitle;
 let currentDescription;
 let songs = [];
@@ -17,25 +17,23 @@ let alboms = [];
 
 // Gatting all songs from songs folder in an array
 async function gateSongs(folder) {
-  let a = await fetch(`https://api.github.com/repos/IamBablu/New-Musify/contents${folder}`);
-  let response = await a.json();
+  let a = await fetch(`${folder}`);
+  let response = await a.text();
   // console.log(response);
   let div = document.createElement("div");
   div.innerHTML = response;
   let as = div.getElementsByTagName("a");
   songs = [];
-  Array.from(response).forEach(e=>{
-    if (e.url.endsWith(".mp3")) {
-      // console.log(element.href.replaceAll("%20", " ").split(`${folder}`)[1])
-      songs.push(e.url.replaceAll("%20", " ").split(`${folder}`)[1]);
-    }
-  })
   // restoring the songs and libraryList
-  // libraryList.innerHTML = "";
-  // for (let index = 0; index < as.length; index++) {
-  //   const element = as[index];
-  //   // console.log(element);
-  // }
+  libraryList.innerHTML = "";
+  for (let index = 0; index < as.length; index++) {
+      const element = as[index];
+    if (element.href.endsWith(".mp3")) {
+      // console.log(element.href.replaceAll("%20", " ").split(`${folder}`)[1])
+      songs.push(element.href.replaceAll("%20", " ").split(`${folder}`)[1]);
+    }
+    // console.log(element);
+  }
   // // Listing songs in library list
   songs.forEach((song) => {
     libraryList.innerHTML =
@@ -91,41 +89,52 @@ function playMusic(track, AudioPlay = true) {
 
 // getting Banner of each alboms
 async function getBanner(e) {
-  let i = await fetch(`https://api.github.com/repos/IamBablu/New-Musify/contents/songs/${e}`);
-  let ir = await i.json();
-  Array.from(ir).forEach((bimg) => {
+  let i = await fetch(`/songs/${e}`);
+  let ir = await i.text();
+  let div = document.createElement("div");
+  div.innerHTML = ir;
+  let as = div.getElementsByTagName("a");
+  // console.log(as);
+  Array.from(as).forEach((bimg) => {
+    // console.log(bimg);
     if (
-      bimg.url.endsWith(".jpeg") ||
-      bimg.url.endsWith(".jpg") ||
-      bimg.url.endsWith(".png")
+      bimg.href.endsWith(".jpeg") ||
+      bimg.href.endsWith(".jpg") ||
+      bimg.href.endsWith(".png")
     ) {
-      currentBanner = bimg.url.split(":5500")[1];
+      currentBanner = bimg.href.replaceAll("%20"," ");
+      // console.log(bimg.href.split('/songs/')[1]);
     }
   });
 }
 
 // getting current title and description of folder
 async function getTitleDescription(folder) {
-  let t = await fetch(`https://api.github.com/repos/IamBablu/New-Musify/contents/songs/${folder}/info.json`);
+  let t = await fetch(`/songs/${folder}/info.json`);
   let response = await t.json();
   currentTitle = response.title;
   currentDescription = response.description;
 }
 // for showing folder in alboms
 async function showFolders() {
-  console.log("displaying alboms");
-  let f = await fetch('https://api.github.com/repos/IamBablu/New-Musify/contents/songs/');
+  // console.log("displaying alboms");
+  let f = await fetch('/songs/');
   // console.log(f);
-  let response = await f.json();
+  let response = await f.text();
   // console.log(response[0])
-  Array.from(response).forEach(e=>{
-    console.log(e.url)
-    alboms.push(e.url.split("/songs/")[1].replaceAll("%20", " "));
-    console.log(e.url.split("/songs/")[1].replaceAll("%20", " "))
+  let div = document.createElement("div");
+  div.innerHTML = response;
+  let as = div.getElementsByTagName("a");
+// console.log(as)
+  Array.from(as).forEach(e=>{
+    // console.log(e);
+    if (e.href.includes("/songs/")) {
+      // console.log(e.href)
+      alboms.push(e.href.split("/songs/")[1].replaceAll("%20", " "));
+      // console.log(e.href.split("/songs/")[1].replaceAll("%20", " "))
+    }
   })
   for (let index = 0; index < alboms.length; index++) {
-    // console.log(alboms[index].href);
-      // console.log(alboms[index])
       await getBanner(alboms[index]);
       // console.log(alboms[index])
       await getTitleDescription(alboms[index]);
