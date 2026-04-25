@@ -17,7 +17,7 @@ let alboms = [];
 // Gatting all songs from songs folder in an array
 async function gateSongs(folder) {
   // let a = await fetch(`/songs/${folder}`);
-  let b = await fetch(`https://github.com/IamBablu/New-Musify/tree/main/songs/${folder}`).then(res => res.json());
+  let b = await fetch(`https://api.github.com/repos/IamBablu/New-Musify/tree/main/songs/${folder}`).then(res => res.json());
   console.log("All songs: ",b)
   songs = [];
   Array.from(b).forEach(file => {
