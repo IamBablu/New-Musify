@@ -1,5 +1,4 @@
 console.log("Js Initializing....");
-
 const left = document.querySelector(".left");
 const menu = document.querySelector(".menu");
 const cross = document.querySelector(".cross");
@@ -17,23 +16,15 @@ let alboms = [];
 
 // Gatting all songs from songs folder in an array
 async function gateSongs(folder) {
-  let a = await fetch(`${folder}`);
-  let response = await a.text();
-  // console.log(response);
-  let div = document.createElement("div");
-  div.innerHTML = response;
-  let as = div.getElementsByTagName("a");
+  // let a = await fetch(`/songs/${folder}`);
+  let b = await fetch(`https://github.com/IamBablu/New-Musify/tree/main/songs/${folder}`).then(res => res.json());
+  console.log("All songs: ",b)
   songs = [];
-  // restoring the songs and libraryList
-  libraryList.innerHTML = "";
-  for (let index = 0; index < as.length; index++) {
-      const element = as[index];
-    if (element.href.endsWith(".mp3")) {
-      // console.log(element.href.replaceAll("%20", " ").split(`${folder}`)[1])
-      songs.push(element.href.replaceAll("%20", " ").split(`${folder}`)[1]);
-    }
-    // console.log(element);
-  }
+  Array.from(b).forEach(file => {
+    file.path.endsWith(".mp3")
+    console.log("NAYA FILE: ",file.path.replaceAll("%20", " ").split(`${folder}`)[1])
+    songs.push(file.path.replaceAll("%20", " ").split(`${folder}`)[1]);
+  })
   // // Listing songs in library list
   songs.forEach((song) => {
     libraryList.innerHTML =
@@ -89,54 +80,40 @@ function playMusic(track, AudioPlay = true) {
 
 // getting Banner of each alboms
 async function getBanner(e) {
-  let i = await fetch(`/songs/${e}`);
-  let ir = await i.text();
-  let div = document.createElement("div");
-  div.innerHTML = ir;
-  let as = div.getElementsByTagName("a");
-  // console.log(as);
-  Array.from(as).forEach((bimg) => {
-    // console.log(bimg);
+  let i = await fetch(`https://api.github.com/repos/IamBablu/New-Musify/contents/songs/${e}/`).then(res => res.json())
+  
+  Array.from (i).forEach((bimg)=>{
     if (
-      bimg.href.endsWith(".jpeg") ||
-      bimg.href.endsWith(".jpg") ||
-      bimg.href.endsWith(".png")
-    ) {
-      currentBanner = bimg.href.replaceAll("%20"," ");
-      // console.log(bimg.href.split('/songs/')[1]);
+      bimg.path.endsWith(".jpeg") ||
+      bimg.path.endsWith(".jpg") ||
+      bimg.path.endsWith(".png")
+    ){
+      currentBanner = bimg.path.replaceAll("%20"," ");
     }
-  });
+  })
 }
 
 // getting current title and description of folder
 async function getTitleDescription(folder) {
-  let t = await fetch(`/songs/${folder}/info.json`);
-  let response = await t.json();
+  let t = await fetch(`https://api.github.com/repos/IamBablu/New-Musify/contents/songs/${folder}/info.json/`).then(res => res.json());
+  let response = await fetch(t.download_url).then(res => res.json())
+  
   currentTitle = response.title;
   currentDescription = response.description;
 }
 // for showing folder in alboms
 async function showFolders() {
-  // console.log("displaying alboms");
-  let f = await fetch('/songs/');
-  // console.log(f);
-  let response = await f.text();
-  // console.log(response[0])
-  let div = document.createElement("div");
-  div.innerHTML = response;
-  let as = div.getElementsByTagName("a");
-// console.log(as)
-  Array.from(as).forEach(e=>{
-    // console.log(e);
-    if (e.href.includes("/songs/")) {
-      // console.log(e.href)
-      alboms.push(e.href.split("/songs/")[1].replaceAll("%20", " "));
-      // console.log(e.href.split("/songs/")[1].replaceAll("%20", " "))
+   let f = await fetch('https://api.github.com/repos/IamBablu/New-Musify/contents/songs/').then(res => res.json());
+  
+  Array.from(f).forEach(e=>{
+    if(e.git_url.includes("trees")){
+      alboms.push(e.name);
+      
     }
   })
-  for (let index = 0; index < alboms.length; index++) {
+  
+  for (let index = 0; index < alboms.length; index++) {   
       await getBanner(alboms[index]);
-      // console.log(alboms[index])
       await getTitleDescription(alboms[index]);
       // Listing folder in alboms
       cards.innerHTML += `<div data-folder = "${alboms[index]}" class="card">
@@ -156,9 +133,9 @@ async function showFolders() {
 
 async function main() {
   await showFolders();
-  currentFolder = `/songs/${alboms[0]}/`;
+  currentFolder = `${alboms[0]}/`;
   await gateSongs(currentFolder);
-  playMusic(songs[0], false);
+  // playMusic(songs[0], false);
 
   // showing or hiding left container in small screen device
   menu.addEventListener("click", () => {
@@ -249,4 +226,5 @@ async function main() {
     });
   });
 }
+
 main();
