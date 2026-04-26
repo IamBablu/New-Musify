@@ -484,8 +484,8 @@ hr {
     justify-content: center;
   }
   .card {
-    width: 155px;
-    min-width: 130px;
+    width: 145px;
+    min-width: 120px;
   }
   .Artist h3 {
     margin: 15px 0;
